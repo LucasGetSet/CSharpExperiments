@@ -1,0 +1,102 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+
+namespace JogoLuta
+{    
+    public class BarraVida
+    {   
+		// ▓░  A barra de vida será visual e composta por estes dois simbolos 20 CARACTERES o valor de vida TIRADA DEVE ser dividida por 5
+        // "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓"
+
+        public StringBuilder barra;
+        public int vidaInicial = 100;
+        public int tamanhoBarra = 20; 
+        public int chunkValue; // 5
+        
+        public StringBuilder AtualizaBarra(int dano, int vidaAtual) //Só aceita int
+        {
+            barra.Length = vidaAtual / 5 ;
+            barra = barra.Append(new string('░', tamanhoBarra - barra.Length));
+            return barra;
+        }
+        
+        public BarraVida(int vida)
+        {
+            chunkValue = vidaInicial / tamanhoBarra;
+            this.vidaInicial = vida;
+            barra = new StringBuilder(new string('▓', tamanhoBarra));
+        } 
+    }
+    public class Lutador
+    {
+        public BarraVida barraVida { get; set; }
+        public int forca { get; set; }
+        public int vida { get; set; }
+        public string nome { get; set; }
+        
+        public Lutador(string nome, int forca, int vida)
+        {
+            barraVida = new BarraVida(vida);
+            this.nome = nome;
+            this.forca = forca;
+            this.vida = vida;
+        }
+
+        public void ExibeStatus()
+        {
+            Console.WriteLine();
+            Console.WriteLine($"Lutador: {nome}");
+            Console.WriteLine(barraVida.barra);
+            Console.WriteLine($"Vida: {vida}");
+            Console.WriteLine($"Força: {forca}");
+            Console.WriteLine();
+            
+        }
+
+        public void Golpe(Lutador adversario)
+        {
+            Random random = new Random();
+            Console.Write($"{nome} Golpeou {adversario.nome}");
+            int dano = random.Next(10, 20);
+            Console.WriteLine($" -{dano}\n");
+            adversario.vida = vida - dano >= 0 ? vida-dano:0;
+            adversario.barraVida.barra = barraVida.AtualizaBarra(dano, adversario.vida);
+        }
+    }
+
+
+
+    public class Program
+    {
+        // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+        static void Main(string[] args)
+        {
+            Lutador l1 = new Lutador("Lucas", 10, 100);
+            Lutador l2 = new Lutador("Artorias", 10, 100);
+
+            while(l1.vida > 0 || l2.vida > 0)
+            {
+                l1.Golpe(l2);
+                l2.ExibeStatus();
+                Thread.Sleep(1000);
+                if(l2.vida == 0)
+                {
+                    Console.WriteLine($"{l1.nome} VENCEDOR!");
+                    break;
+                }
+                l2.Golpe(l1);
+                l1.ExibeStatus();
+                Thread.Sleep(1000);
+                if(l1.vida == 0)
+                {
+                    Console.WriteLine($"{l2.nome} VENCEDOR!");
+                    break;
+                }
+            }
+        }
+    }
+}
