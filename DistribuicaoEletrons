@@ -1,0 +1,53 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace distEletron
+{
+
+    /*
+        Preciso que o numero atomico seja DISTRIBUIDO para cada nivel específico de maneira uniforme e progressivamente ordenadam
+    */
+    public class Atomo
+    {
+        public int nAtomico;
+        
+        public void DistribruiEletron()
+        {
+            
+            Dictionary<string, int> Eletrosfera = new Dictionary<string, int>(){{"K", 0}, {"L", 0}, {"M", 0}, {"N", 0}, {"O", 0}, {"P", 0}, {"Q", 0}};
+            
+            int[] level = new int[]{2,8,18,32,32,18,8};
+            
+            int count = 0;
+            
+            foreach(string nivel in Eletrosfera.Keys.ToList())
+            {
+            
+                int eletronsNivel = Math.Min(nAtomico, level[count]);
+                
+                if(nAtomico > 0)
+                {
+                    //     
+                    Eletrosfera[nivel] = eletronsNivel;
+                    nAtomico -= eletronsNivel; 
+                }
+                else
+                {
+                    Eletrosfera[nivel] = 0;
+                }
+                Console.WriteLine($"Nivel: {nivel}  ->  {Eletrosfera[nivel]} Eletrons");
+                count++;
+            }
+
+
+        }
+
+        public Atomo(int nAtomico)
+        {
+            this.nAtomico = nAtomico;
+        }
+
+    }
+}
